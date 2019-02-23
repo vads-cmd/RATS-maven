@@ -56,7 +56,7 @@ public class DummyTest extends TestBase {
         RestResponse response = app.post("/api/users", params);
         DummyPostCreate responseData = gson.fromJson(response.body(), DummyPostCreate.class);
 
-        assertEquals(response.statusCode(), 201);
+        assertEquals(response.statusCode(), 200);
         assertEquals(responseData.getName(), requestData.getName());
         assertEquals(responseData.getJob(), requestData.getJob());
     }

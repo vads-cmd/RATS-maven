@@ -9,13 +9,17 @@ public class AppManager {
     private String baseUrl = "https://reqres.in";
     RequestSpecification httpRequest;
 
+    public String getBaseUrl(){
+        return baseUrl;
+    }
+
     private void connect() {
         RestAssured.baseURI = baseUrl;
         httpRequest = RestAssured.given();
     }
 
     public RestResponse get(String endpoint, JsonObject params){
-        connect();
+
         Response response = httpRequest
                 .header("Content-Type", "application/json")
                 .body(params)
@@ -32,11 +36,11 @@ public class AppManager {
     }
 
     public RestResponse post(String endpoint, JsonObject params){
-        connect();
-        Response response = httpRequest
-                .header("Content-Type", "application/json")
-                .body(params.toString())
-                .post(endpoint);
+            connect();
+            Response response = httpRequest
+                    .header("Content-Type", "application/json")
+                    .body(params.toString())
+                    .put(endpoint);
         RestResponse workedResponse = new RestResponse(response);
         return workedResponse;
     }

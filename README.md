@@ -1,6 +1,7 @@
 
 # RATS-Maven
 Rest Automation Testing Suit. 
+
 Maven version.
 
 v.1.1.0
@@ -57,7 +58,9 @@ Creating test consists of several steps
  1. Creating a new object and adding parameters that we will need to send to server via request.
 
 	``DummyPostCreate requestData = new DummyPostCreate(); ``
+	
 	``requestData.setName(fullName());``
+	
 	``requestData.setJob(occupation()); ``
 
 	This step is optional and used if you need to validate response data.
@@ -67,7 +70,9 @@ For this purpose we may use fake data objects.
 Here is example of creating a request body:
 
 	``JsonObject body = new JsonObject();``
+	
 	``params.addProperty("name", requestData.getName());``
+	
 	``params.addProperty("job", requestData.getJob()); ``
 
 	This step is optional and used if you need to form request body. Also, you may add body parameters one by one during creating a request.
@@ -102,7 +107,9 @@ Here is example of creating a request body:
  Assertions are performed using TestNG library.
 
 	``assertEquals(response.statusCode(), 201);``
+	
 	``assertEquals(responseData.getName(), requestData.getName());``
+	
 	``assertEquals(responseData.getJob(), requestData.getJob());``
 
 

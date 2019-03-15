@@ -1,7 +1,7 @@
+
 # RATS-Maven
 Rest Automation Testing Suit. Maven version.
-
-v.1.0.0
+v.1.1.0
 
 ## Introduction
 
@@ -10,11 +10,11 @@ REST Automation Testing Suit (RATS) is a set of tools for quick and easy start o
 ## Quick installation
 You need to do easy 5 steps to start using RATS.
 
-1.  Download and unpack RATS package from GitHub.
-2.  Create a new project in your IDE and import RATS as a module.
-3.  Change BaseURL setting in src/test/com.github.rats/workers/AppManager class to your REST node.
-4.  Make a simple GET request according to your needs using simple request from rest-assured library.
-5.  Launch test.
+ -  Download and unpack RATS package from GitHub.
+ -  Create a new project in your IDE and import RATS as a module.
+ -  Change BaseURL setting in src/test/com.github.rats/workers/AppManager class to your REST node.
+ -  Make a simple GET request according to your needs using simple request from rest-assured library.
+ -  Launch test.
 
 Minimum requirements are Java 1.8.0_181 and Maven 3.6.0.
 Please, check your Language level - it must be set to 8.
@@ -48,44 +48,66 @@ All Dummy tests are performed using https://reqres.in/
 
 First of all, you will need to create a **pojo** (plain old java object) with properties and methods to manipulate responses. Use server response or JSON schema. Use http://jsonschema2pojo.org with settings for generating this object for Gson library. Do not forget to include equals() and hashCode() methods. Put created pojo into models folder.
 
-Next Step is to create a new test in tests folder. This test must extend TestBase class for using http requests library and logger.
+Next Step is to create a new test in tests folder. This test must extend TestBase class for using HTTP Requests library and Logger.
 
 Creating test consists of several steps
 
- 1. *(Optional for sending data)* Creating a new object and adding parameters that we will need to send to server via request:
+ 1. Creating a new object and adding parameters that we will need to send to server via request.
 
-*DummyPostCreate requestData = new DummyPostCreate();
-requestData.setName(fullName());
-requestData.setJob(occupation());*
+	``DummyPostCreate requestData = new DummyPostCreate(); ``
+	``requestData.setName(fullName());``
+	``requestData.setJob(occupation()); ``
 
-For parameters we may use fake data objects.
-After that let's create a JSON with these parameters:
+	This step is optional and used if you need to validate response data.
 
-*JsonObject params = new JsonObject();
-params.addProperty("name", requestData.getName());
-params.addProperty("job", requestData.getJob());*
+2. Create a JSON for request body.
+For this purpose we may use fake data objects.
+Here is example of creating a request body:
 
- 2. Now we can send request to server and parse response body to another object:
+	``JsonObject body = new JsonObject();``
+	``params.addProperty("name", requestData.getName());``
+	``params.addProperty("job", requestData.getJob()); ``
 
- *RestResponse response = app.post("/api/users", params);*
+	This step is optional and used if you need to form request body. Also, you may add body parameters one by one during creating a request.
 
- Response is split into statusCode, headers and body properties. They can be parsed to different objects if nessesary:
+ 3. Create a request.
+ Create new RestRequest object and parse an endpoint as a parameter. All additional data (like headers, content-type, cookies, query parameters and body are optional. Also you may add parameters to body right here. All options can be repeated.
 
-*DummyPostCreate responseData = gson.fromJson(response.body(), DummyPostCreate.class);*
+	``RestRequest request = new RestRequest("/api/users")
+	.withContent().withHeader().withCookie().withQuery().withParam().withBody``
 
-Fail of test on this step means that response uses wrong JSON Schema and body cannot be parsed to our object.
+	List of options:
 
- 3. Perform Assertions:
+ - withContent() - set Content-Type. Use String as data type.
+ - withHeader() - set Header of request. You may use either specialized Header data type from RestAssured library or  two Strings as key and value.
+ - withQuery() - set query parameter that is sent in URI. Use String data type for both key and value
+ - withBody() - set JSON object as body
+ - withParam() - add data to body of request. Use String data type for both parameter name and value. It will be translated into JSON.
+ - withCookie() - add a Cookie. You may use Cookie data type from RestAssured library or build one, using String data type for key and value.
 
- *assertEquals(response.statusCode(), 201);
-assertEquals(responseData.getName(), requestData.getName());
-assertEquals(responseData.getJob(), requestData.getJob());*
+ 4. Send a request and receive response.
+ Request will be automatically converted into response object
+
+	 ``RestResponse response = app.post(request);``
+
+	 Response is split into statusCode, headers and body properties. They can be parsed to different objects if necessary:
+
+	``DummyPostCreate responseData = gson.fromJson(response.body(), DummyPostCreate.class);  ``
+
+	Fail of test on this step means that response uses wrong JSON Schema and body cannot be parsed to our object.
+
+ 5. Perform Assertions.
+ Assertions are performed using TestNG library.
+
+	``assertEquals(response.statusCode(), 201);``
+	``assertEquals(responseData.getName(), requestData.getName());``
+	``assertEquals(responseData.getJob(), requestData.getJob());``
+
 
 ## Request methods
-All requests can be performed both with and without JSON body.
+All requests can be performed both with any type and number of parameters (e.g. headers, content-type, cookies, query parameters and body) .
 
-*app.%methodName%("%endpoint%")* or
-*app.%methodName%("%endpoint%", params)*
+``app.%methodName%(request)``
 
 Currently RATS supports next HTTP Methods:
 
@@ -130,3 +152,4 @@ See Allure2 documentation for more options and information
 
 ## Version info
 14.02.2019 - 1.0.0 - Initial commit.
+15.03.2019 - 1.1.0 - Reworked creation of request and usage of http methods

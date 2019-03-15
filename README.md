@@ -1,6 +1,8 @@
 
 # RATS-Maven
-Rest Automation Testing Suit. Maven version.
+Rest Automation Testing Suit. 
+Maven version.
+
 v.1.1.0
 
 ## Introduction
@@ -152,4 +154,5 @@ See Allure2 documentation for more options and information
 
 ## Version info
 14.02.2019 - 1.0.0 - Initial commit.
+
 15.03.2019 - 1.1.0 - Reworked creation of request and usage of http methods
